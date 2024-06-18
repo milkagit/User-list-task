@@ -1,15 +1,9 @@
 import React, { useEffect } from 'react';
-// import type { FormProps } from 'antd';
 import { Button, Form, Input } from 'antd';
 import { User } from '../api/users';
-import { RuleObject, RuleRender } from 'antd/es/form';
-import useUsers from '../hooks/useUsers';
-// import { RootState } from '../store';
-// import { useSelector } from 'react-redux';
 
 interface UserFormProps {
     initialUserValues: User
-    // onFinish: (id: number) => void
     onFinish: (values: Partial<User>) => void
     onCancel: () => void
 }
@@ -26,12 +20,8 @@ const onFinish = (values: Partial<User>) => {
     onFinish(values)
 }
 
-const UserForm: React.FC<UserFormProps> = ({ initialUserValues, onFinish, onCancel }) => {
-    // const userFormData = useSelector((state: RootState) => state.users.editUser);
-    // const testFormData = Object.keys(initialUserValues).map(key => (key));
-    // const { users } = useUsers();
+const UserForm: React.FC<UserFormProps> = ({ initialUserValues, onFinish }) => {
     const [form] = Form.useForm();
-    console.log('initialUserValues', initialUserValues);
     const { id, ...initialValues } = initialUserValues
 
     useEffect(() => {
@@ -47,7 +37,6 @@ const UserForm: React.FC<UserFormProps> = ({ initialUserValues, onFinish, onCanc
             wrapperCol={{ span: 16 }}
             style={{ maxWidth: 600 }}
             initialValues={initialUserValues}
-            // onFinish={onFinish}
             onFinish={onFinish}
             // onFinishFailed={}
             autoComplete="off"
@@ -88,7 +77,6 @@ const UserForm: React.FC<UserFormProps> = ({ initialUserValues, onFinish, onCanc
             </Form.Item>
             <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                 <Button type="primary" htmlType="submit" onClick={() => form.resetFields()}>
-                    {/* <Button type="primary" htmlType="submit" onClick={() => onFinish(id)}> */}
                     Cancel
                 </Button>
             </Form.Item>

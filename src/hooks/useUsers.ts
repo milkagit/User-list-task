@@ -12,7 +12,7 @@ const useUsers = () => {
 
   useEffect(() => {
     dispatch(fetchUsersThunk());
-  }, [dispatch]);
+  }, []);
 
   const updateUser = (user: User) => {
     dispatch(postUsersThunk(user));

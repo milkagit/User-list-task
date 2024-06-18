@@ -1,27 +1,21 @@
-import React from 'react';
-import { Collapse, Spin, Alert } from 'antd';
+// import React, { useRef, useState } from 'react';
+import { Collapse, Spin, Alert, Button } from 'antd';
 import useUsers from '../hooks/useUsers';
 import { User } from '../api/users';
-import UserDetails from './UserDetails';
+import { useDispatch } from 'react-redux';
+import { clearEditUser } from '../store/userSlice';
+import { useNavigate } from 'react-router-dom';
 import UserForm from './UserForm';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../store';
-import { clearEditUser, setEditUser, setUpdateUser } from '../store/userSlice';
 
 const { Panel } = Collapse;
 
-const UserList: React.FC = () => {
+interface UserListProps {
+  userId?: number
+}
+const UserList: React.FC<UserListProps> = ({ userId }) => {
   const { users, loading, error, updateUser } = useUsers();
+  const path = useNavigate();
   const dispatch = useDispatch();
-  const editUser = useSelector((state: RootState) => state.users.editUser);
-
-  const onChange = (key: string | string[]) => {
-    console.log(key);
-  };
-
-  const handleEditForm = (userId: number) => {
-    dispatch(setEditUser(userId));
-  };
 
   const handleFinishEdit = (values: Partial<User>, userId: number) => {
     const updatedUser = {
@@ -33,8 +27,6 @@ const UserList: React.FC = () => {
       street: values.street || '',
       suite: values.suite || ''
     };
-    // dispatch(setUpdateUser(updatedUser));
-    // dispatch(clearEditUser());
     updateUser(updatedUser)
     dispatch(clearEditUser());
 
@@ -52,28 +44,83 @@ const UserList: React.FC = () => {
     return <Alert message="Error" description={error} type="error" />;
   }
 
-  console.log('users', users);
+
+  const filteredUsers = userId ? users.filter(user => user.id === userId) : users;
+
+
+
+  const handleRedirect = (userId: number) => {
+    path(`/posts/${userId}`)
+  }
 
   return (
-    <div>
-      <Collapse
-        defaultActiveKey={['1']}
-        onChange={onChange}
-      >
-        {users.map((user: User) => (
-          <Panel header={`${user.name} (${user.username})`} key={user.id.toString()}>
-            {editUser === user.id ?
-              (
-                <UserForm initialUserValues={user} onFinish={(values) => handleFinishEdit(values, user.id)} onCancel={handleCancelEdit} />
-              )
-              : (
-                <UserDetails user={user} handleEditForm={handleEditForm} />
-              )}
+    <div style={{
+      padding: "40px",
+      boxSizing: "border-box" // <--- this line
+    }} >
+      {filteredUsers.length > 1 && filteredUsers.map((user: User) => (
+        <Collapse
+          defaultActiveKey={['1']}
+          key={user.id}
+        // onChange={onChange}
+        >
+          <Panel header={`${user.name} (${user.username})`} key={user.id}>
+            <UserForm
+              initialUserValues={user}
+              onFinish={(values) => handleFinishEdit(values, user.id)}
+              onCancel={handleCancelEdit}
+            />
+            <Button onClick={() => handleRedirect(user.id)}>See posts</Button>
           </Panel>
-        ))}
-      </Collapse>
+        </Collapse>
+      ))}
+      {filteredUsers.length === 1 && (
+        <UserForm
+          initialUserValues={filteredUsers[0]}
+          onFinish={(values) => handleFinishEdit(values, filteredUsers[0].id)}
+          onCancel={handleCancelEdit}
+        />
+      )}
+
     </div>
   )
 };
 
 export default UserList;
+{/* nice funnny infinite loop here.... */ }
+{/* <h1>{user.name}</h1> */ }
+{/* <UserComponent user={user} /> */ }
+
+{/* {editUser === user.id ? (
+              <UserForm initialUserValues={user} onFinish={(values) => handleFinishEdit(values, user.id)} onCancel={handleCancelEdit} />
+            ) : (
+              <UserDetails user={user} handleEditForm={handleEditForm} />
+)} */}
+
+// {filteredUsers.length > 1 && filteredUsers.map((user: User) => (
+//   <Collapse
+//     defaultActiveKey={['1']}
+//     key={user.id}
+//   // onChange={onChange}
+//   >
+//     <Panel header={`${user.name} (${user.username})`} key={user.id}>
+//       {/* <UserComponent
+//         user={user}
+//         handleEditForm={handleEditForm}
+//         handleCancelEdit={handleCancelEdit}
+//         handleFinishEdit={handleFinishEdit}
+//         editUser={editUser}
+//       /> */}
+//       <UserForm
+//         initialUserValues={user}
+//         onFinish={(values) => handleFinishEdit(values, user.id)}
+//         onCancel={handleCancelEdit}
+//       />
+//       <Button onClick={() => handleRedirect(user.id)}>See posts</Button>
+//     </Panel>
+//   </Collapse>
+// ))}
+
+
+
+

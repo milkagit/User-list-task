@@ -7,6 +7,7 @@ interface UsersState {
   loading: boolean;
   error: string | null;
   editUser: number | null;
+  fullView: boolean
 }
 
 const initialState: UsersState = {
@@ -14,6 +15,7 @@ const initialState: UsersState = {
   loading: false,
   error: null,
   editUser: null,
+  fullView: false
 };
 
 // Thunk for fetching users
@@ -21,7 +23,7 @@ export const fetchUsersThunk = createAsyncThunk(
   'users/fetchUsers',
   async () => {
     const response = await fetchUsers();
-    console.log('response', response);
+    // console.log('response', response);
     //take the mandatory fields + name
     return response.map((user: User) => (
       {
@@ -54,14 +56,9 @@ const usersSlice = createSlice({
     clearEditUser(state) {
       state.editUser = null
     },
-    setUpdateUser(state, action: PayloadAction<Partial<User> & { id: number }>) {
-      const index = state.users.findIndex((user) => user.id === action.payload.id);
-      if (index !== -1) {
-        state.users[index] = { ...state.users[index], ...action.payload };
-        state.editUser = null;
-      }
-    }
-
+    setFullView(state, action: PayloadAction<boolean>) {
+      state.fullView = action.payload
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -86,6 +83,6 @@ const usersSlice = createSlice({
   },
 });
 
-export const { setEditUser, clearEditUser, setUpdateUser } = usersSlice.actions;
+export const { setEditUser, clearEditUser, setFullView } = usersSlice.actions;
 
 export default usersSlice.reducer;
