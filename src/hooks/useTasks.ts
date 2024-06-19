@@ -1,10 +1,9 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../store';
-import { User } from "../api/users";
 import { fetchTasksThunk } from '../store/taskSlice';
 
-const useUsers = (userId: number) => {
+const useUsers = () => {
   const dispatch = useDispatch<AppDispatch>();
   const tasks = useSelector((state: RootState) => state.tasks.tasks);
   const loading = useSelector((state: RootState) => state.tasks.loading);

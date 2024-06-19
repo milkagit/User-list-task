@@ -1,13 +1,11 @@
 // import React, { useRef, useState } from 'react';
-import { Collapse, Spin, Alert, Button } from 'antd';
+import { Collapse, Spin, Alert, Button, CollapseProps } from 'antd';
 import useUsers from '../hooks/useUsers';
 import { User } from '../api/users';
 import { useDispatch } from 'react-redux';
 import { clearEditUser } from '../store/userSlice';
 import { useNavigate } from 'react-router-dom';
 import UserForm from './UserForm';
-
-const { Panel } = Collapse;
 
 interface UserListProps {
   userId?: number
@@ -39,33 +37,34 @@ const UserList: React.FC<UserListProps> = ({ userId }) => {
 
   const filteredUsers = userId ? users.filter(user => user.id === userId) : users;
 
-
-
   const handleRedirect = (userId: number) => {
     path(`/posts/${userId}`)
   }
+
+  const collapseItems: CollapseProps['items'] = filteredUsers.map((user: User) => ({
+    key: user.id.toString(),
+    label: `${user.name} (${user.username})`,
+    children: (
+      <>
+        <UserForm
+          initialUserValues={user}
+          onFinish={(values) => handleFinishEdit(values, user.id)}
+          onCancel={handleCancelEdit}
+        />
+        <Button onClick={() => handleRedirect(user.id)}>See posts</Button>
+      </>
+    ),
+  }));
 
   return (
     <div style={{
       padding: "40px",
       boxSizing: "border-box"
     }} >
-      {filteredUsers.length > 1 && filteredUsers.map((user: User) => (
-        <Collapse
-          defaultActiveKey={['1']}
-          key={user.id}
-        // onChange={onChange}
-        >
-          <Panel header={`${user.name} (${user.username})`} key={user.id}>
-            <UserForm
-              initialUserValues={user}
-              onFinish={(values) => handleFinishEdit(values, user.id)}
-              onCancel={handleCancelEdit}
-            />
-            <Button onClick={() => handleRedirect(user.id)}>See posts</Button>
-          </Panel>
-        </Collapse>
-      ))}
+
+      {filteredUsers.length > 1 && (
+        <Collapse defaultActiveKey={['1']} items={collapseItems} />
+      )}
       {filteredUsers.length === 1 && (
         <UserForm
           initialUserValues={filteredUsers[0]}

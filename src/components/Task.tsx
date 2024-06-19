@@ -17,57 +17,6 @@ interface DataType {
   completed: string;
 }
 
-// let columns: TableColumnsType<DataType> = [
-//   {
-//     key: 'name',
-//     title: 'Name',
-//     dataIndex: 'userId',
-//     showSorterTooltip: { target: 'full-header' },
-//     filters: [
-//       {
-//         text: 'Joe',
-//         value: 'Joe',
-//       }
-//     ],
-//     // specify the condition of filtering result here is that finding the name started with `value`
-//     onFilter: (value, record) => record.userId.indexOf(value as string) === 0,
-//     sorter: (a, b) => a.userId.length - b.userId.length,
-//     sortDirections: ['descend'],
-//   },
-//   {
-//     key: 'title',
-//     title: 'Title',
-//     dataIndex: 'title',
-//     defaultSortOrder: 'descend',
-//     sorter: (a, b) => a.title.length - b.title.length,
-//   },
-//   {
-//     key: 'status',
-//     title: 'Status',
-//     dataIndex: 'completed',
-//     filters: [
-//       {
-//         text: 'Completed',
-//         value: 'Completed',
-//       },
-//       {
-//         text: 'Uncompleted',
-//         value: 'Uncompleted',
-//       },
-//     ],
-//     onFilter: (value, record) => record.completed.indexOf(value as string) === 0,
-//     // render: () => (
-//     //   <Space size="middle">
-//     //     <Dropdown menu={{ items }}>
-//     //       <a>
-//     //         More <DownOutlined />
-//     //       </a>
-//     //     </Dropdown>
-//     //   </Space>
-//     // )
-//   },
-// ];
-
 const onChange: TableProps<DataType>['onChange'] = (pagination, filters, sorter, extra) => {
   console.log('params', pagination, filters, sorter, extra);
 };
@@ -78,9 +27,9 @@ const Task = () => {
   const { users } = useUsers();
   const dispatch = useDispatch();
 
-  const handleCheckboxChange = (taskId: number, checked: boolean) => {
-    dispatch(setEditStatus({ taskId, completed: checked }));
-  };
+  // const handleCheckboxChange = (taskId: number, checked: boolean) => {
+  //   dispatch(setEditStatus({ taskId, completed: checked }));
+  // };
 
 
   let columns: TableColumnsType<DataType> = [
@@ -121,13 +70,23 @@ const Task = () => {
       onFilter: (value, record) => record.completed.indexOf(value as string) === 0,
       render: (completed: string, record: DataType) => (
         <Checkbox
-          onChange={(e) => handleCheckboxChange(record.id as number, e.target.checked)}
+          // onChange={(e) => handleCheckboxChange(record.id as number, e.target.checked)}
           checked={completed === 'Completed'}
         >
           {/* checked={completed === 'Completed'}> */}
           {completed}
         </Checkbox >
       ),
+      //     onFilter: (value, record) => record.completed.indexOf(value as string) === 0,
+      //     // render: () => (
+      //     //   <Space size="middle">
+      //     //     <Dropdown menu={{ items }}>
+      //     //       <a>
+      //     //         More <DownOutlined />
+      //     //       </a>
+      //     //     </Dropdown>
+      //     //   </Space>
+      //     // )
     },
   ];
 
