@@ -6,7 +6,7 @@ import { AppDispatch, RootState } from '../store';
 import { useDispatch, useSelector } from 'react-redux';
 import UserList from './UserList';
 import { CheckOutlined, HighlightOutlined } from '@ant-design/icons';
-import { Button, Divider, Radio, Space, Typography, message, Popconfirm } from 'antd';
+import { Button, Divider, Radio, Space, Typography, message, Popconfirm, Spin, Alert } from 'antd';
 import type { PopconfirmProps } from 'antd';
 import { Post } from '../api/posts';
 
@@ -17,10 +17,6 @@ const UserPost = () => {
     const { posts, loading, error, updatePost } = usePosts(Number(userId));
     const initialValuesRef = useRef<{ [key: number]: { title: string, body: string } }>({});
     const dispatch = useDispatch<AppDispatch>();
-
-
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>Error: {error}</div>;
 
     const handleEdit = (post: Post, updatedText: string, field: 'title' | 'body') => {
         const updatedPost = {
@@ -91,6 +87,9 @@ const UserPost = () => {
                     </Popconfirm>
                 </div>
             ))}
+            {loading && <Spin tip="Loading..." />}
+            {error && <Alert message="Error" description={error} type="error" />}
+
         </div >
     );
 };

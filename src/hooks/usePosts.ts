@@ -15,7 +15,7 @@ const usePosts = (userId: number) => {
     if (userId) {
       dispatch(fetchPostThunk(userId));
     }
-  }, []);
+  }, [userId]);
 
 
   const updatePost = (post: Post) => {

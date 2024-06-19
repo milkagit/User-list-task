@@ -11,9 +11,7 @@ const useUsers = (userId: number) => {
   const error = useSelector((state: RootState) => state.tasks.error);
 
   useEffect(() => {
-    // if (userId) {
     dispatch(fetchTasksThunk());
-    // }
   }, []);
 
   return { tasks, loading, error };
