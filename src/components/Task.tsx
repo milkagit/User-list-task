@@ -25,53 +25,56 @@ const items = [
   { key: '2', label: 'Uncompleted' },
 ];
 
-let columns: TableColumnsType<DataType> = [
-  {
-    title: 'Name',
-    dataIndex: 'userId',
-    showSorterTooltip: { target: 'full-header' },
-    filters: [
-      {
-        text: 'Joe',
-        value: 'Joe',
-      }
-    ],
-    // specify the condition of filtering result here is that finding the name started with `value`
-    onFilter: (value, record) => record.userId.indexOf(value as string) === 0,
-    sorter: (a, b) => a.userId.length - b.userId.length,
-    sortDirections: ['descend'],
-  },
-  {
-    title: 'Title',
-    dataIndex: 'title',
-    defaultSortOrder: 'descend',
-    sorter: (a, b) => a.title.length - b.title.length,
-  },
-  {
-    title: 'Status',
-    dataIndex: 'completed',
-    filters: [
-      {
-        text: 'Completed',
-        value: 'Completed',
-      },
-      {
-        text: 'Uncompleted',
-        value: 'Uncompleted',
-      },
-    ],
-    onFilter: (value, record) => record.completed.indexOf(value as string) === 0,
-    // render: () => (
-    //   <Space size="middle">
-    //     <Dropdown menu={{ items }}>
-    //       <a>
-    //         More <DownOutlined />
-    //       </a>
-    //     </Dropdown>
-    //   </Space>
-    // )
-  },
-];
+// let columns: TableColumnsType<DataType> = [
+//   {
+//     key: 'name',
+//     title: 'Name',
+//     dataIndex: 'userId',
+//     showSorterTooltip: { target: 'full-header' },
+//     filters: [
+//       {
+//         text: 'Joe',
+//         value: 'Joe',
+//       }
+//     ],
+//     // specify the condition of filtering result here is that finding the name started with `value`
+//     onFilter: (value, record) => record.userId.indexOf(value as string) === 0,
+//     sorter: (a, b) => a.userId.length - b.userId.length,
+//     sortDirections: ['descend'],
+//   },
+//   {
+//     key: 'title',
+//     title: 'Title',
+//     dataIndex: 'title',
+//     defaultSortOrder: 'descend',
+//     sorter: (a, b) => a.title.length - b.title.length,
+//   },
+//   {
+//     key: 'status',
+//     title: 'Status',
+//     dataIndex: 'completed',
+//     filters: [
+//       {
+//         text: 'Completed',
+//         value: 'Completed',
+//       },
+//       {
+//         text: 'Uncompleted',
+//         value: 'Uncompleted',
+//       },
+//     ],
+//     onFilter: (value, record) => record.completed.indexOf(value as string) === 0,
+//     // render: () => (
+//     //   <Space size="middle">
+//     //     <Dropdown menu={{ items }}>
+//     //       <a>
+//     //         More <DownOutlined />
+//     //       </a>
+//     //     </Dropdown>
+//     //   </Space>
+//     // )
+//   },
+// ];
 
 const onChange: TableProps<DataType>['onChange'] = (pagination, filters, sorter, extra) => {
   console.log('params', pagination, filters, sorter, extra);
@@ -82,15 +85,66 @@ const Task = () => {
   const { tasks, loading, error } = useTasks(Number(userId));
   const { users } = useUsers();
 
-  // console.log('tasks list array', tasks);
+
+  // const taskId = uniqueTaskId.map((id) => id);
+  // console.log('ID', taskId);
+
+  let columns: TableColumnsType<DataType> = [
+    {
+      title: 'Name',
+      dataIndex: 'userId',
+      showSorterTooltip: { target: 'full-header' },
+      filters: [
+        {
+          text: 'Joe',
+          value: 'Joe',
+        }
+      ],
+      // specify the condition of filtering result here is that finding the name started with `value`
+      onFilter: (value, record) => record.userId.indexOf(value as string) === 0,
+      sorter: (a, b) => a.userId.length - b.userId.length,
+      sortDirections: ['descend'],
+    },
+    {
+      title: 'Title',
+      dataIndex: 'title',
+      defaultSortOrder: 'descend',
+      sorter: (a, b) => a.title.length - b.title.length,
+    },
+    {
+      title: 'Status',
+      dataIndex: 'completed',
+      filters: [
+        {
+          text: 'Completed',
+          value: 'Completed',
+        },
+        {
+          text: 'Uncompleted',
+          value: 'Uncompleted',
+        },
+      ],
+      onFilter: (value, record) => record.completed.indexOf(value as string) === 0,
+      // render: () => (
+      //   <Space size="middle">
+      //     <Dropdown menu={{ items }}>
+      //       <a>
+      //         More <DownOutlined />
+      //       </a>
+      //     </Dropdown>
+      //   </Space>
+      // )
+    },
+  ];
 
 
-  //connect user id with the user name
+  //connect user id with the user name and display it instead
   const userData = users.map((user: User) => {
     return user.name
   })
 
   const data = tasks.map((task: TaskType) => ({
+    key: task.id,
     id: task.id,
     userId: userData[task.userId - 1],
     title: task.title,
@@ -112,13 +166,9 @@ const Task = () => {
 
   columns[0].filters = Array.from(filterMap.values());
 
-  const testDropdown = columns[2].render
-  console.log('testDropdown', testDropdown)
-
-
 
   // console.log('userId', userData);
-  // console.log('data', data);
+  console.log('data', data);
 
   return (
     <Table

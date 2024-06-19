@@ -32,7 +32,7 @@ const UserForm: React.FC<UserFormProps> = ({ initialUserValues, onFinish }) => {
     return (
         <Form
             form={form}
-            name="user-form"
+            name={`user-form-${id}`}
             labelCol={{ span: 8 }}
             wrapperCol={{ span: 16 }}
             style={{ maxWidth: 600 }}

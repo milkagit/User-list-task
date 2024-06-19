@@ -87,39 +87,8 @@ const UserList: React.FC<UserListProps> = ({ userId }) => {
 };
 
 export default UserList;
-{/* nice funnny infinite loop here.... */ }
-{/* <h1>{user.name}</h1> */ }
-{/* <UserComponent user={user} /> */ }
 
-{/* {editUser === user.id ? (
-              <UserForm initialUserValues={user} onFinish={(values) => handleFinishEdit(values, user.id)} onCancel={handleCancelEdit} />
-            ) : (
-              <UserDetails user={user} handleEditForm={handleEditForm} />
-)} */}
 
-// {filteredUsers.length > 1 && filteredUsers.map((user: User) => (
-//   <Collapse
-//     defaultActiveKey={['1']}
-//     key={user.id}
-//   // onChange={onChange}
-//   >
-//     <Panel header={`${user.name} (${user.username})`} key={user.id}>
-//       {/* <UserComponent
-//         user={user}
-//         handleEditForm={handleEditForm}
-//         handleCancelEdit={handleCancelEdit}
-//         handleFinishEdit={handleFinishEdit}
-//         editUser={editUser}
-//       /> */}
-//       <UserForm
-//         initialUserValues={user}
-//         onFinish={(values) => handleFinishEdit(values, user.id)}
-//         onCancel={handleCancelEdit}
-//       />
-//       <Button onClick={() => handleRedirect(user.id)}>See posts</Button>
-//     </Panel>
-//   </Collapse>
-// ))}
 
 
 
