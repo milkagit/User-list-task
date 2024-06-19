@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Form, Input } from 'antd';
 import { User } from '../api/users';
 
@@ -23,10 +23,15 @@ const onFinish = (values: Partial<User>) => {
 const UserForm: React.FC<UserFormProps> = ({ initialUserValues, onFinish }) => {
     const [form] = Form.useForm();
     const { id, ...initialValues } = initialUserValues
+    const [isTouched, setIsTouched] = useState(false);
 
     useEffect(() => {
         form.setFieldsValue(initialUserValues);
     }, [initialUserValues, form]);
+
+    const handleTouchField = () => {
+        setIsTouched(form.isFieldsTouched())
+    }
 
 
     return (
@@ -42,6 +47,7 @@ const UserForm: React.FC<UserFormProps> = ({ initialUserValues, onFinish }) => {
             autoComplete="off"
             validateMessages={validateMessages}
             variant="filled"
+            onFieldsChange={handleTouchField}
         >
             {Object.keys(initialValues).map(key => (
                 <Form.Item
@@ -70,16 +76,16 @@ const UserForm: React.FC<UserFormProps> = ({ initialUserValues, onFinish }) => {
                 </Form.Item>
             )
             )}
-            <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                <Button type="primary" htmlType="submit">
-                    Submit
-                </Button>
-            </Form.Item>
-            <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                <Button type="primary" htmlType="submit" onClick={() => form.resetFields()}>
-                    Cancel
-                </Button>
-            </Form.Item>
+            {/* <Form.Item wrapperCol={{ offset: 8, span: 16 }}> */}
+            {isTouched && <Button type="primary" htmlType="submit">
+                Submit
+            </Button>}
+            {/* </Form.Item> */}
+            {/* <Form.Item wrapperCol={{ offset: 8, span: 16 }}> */}
+            {isTouched && <Button type="primary" htmlType="submit" onClick={() => form.resetFields()}>
+                Cancel
+            </Button>}
+            {/* </Form.Item> */}
         </Form>
     )
 }

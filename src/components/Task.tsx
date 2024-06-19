@@ -22,8 +22,7 @@ const onChange: TableProps<DataType>['onChange'] = (pagination, filters, sorter,
 };
 
 const Task = () => {
-  const { userId } = useParams<{ userId: string }>();
-  const { tasks, loading, error } = useTasks(Number(userId));
+  const { tasks, loading, error } = useTasks();
   const { users } = useUsers();
   const dispatch = useDispatch();
 
