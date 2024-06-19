@@ -2,28 +2,20 @@ import React from 'react';
 import useTasks from '../hooks/useTasks';
 import { useParams } from 'react-router-dom';
 import { Task as TaskType } from '../api/tasks';
-import { Dropdown, Space, Table } from 'antd';
+import { Dropdown, Space, Table, Checkbox } from 'antd';
 import type { TableColumnsType, TableProps } from 'antd';
 import useUsers from '../hooks/useUsers';
 import { User } from '../api/users';
 import { DownOutlined } from '@ant-design/icons';
+import setEditStatus from '../store/taskSlice';
+import { useDispatch } from 'react-redux';
 
 interface DataType {
   id: React.Key;
   userId: string;
   title: string;
   completed: string;
-  ///
-  // key: React.Key;
-  // date: string;
-  // name: string;
-  // upgradeNum: string;
 }
-
-const items = [
-  { key: '1', label: 'Completed' },
-  { key: '2', label: 'Uncompleted' },
-];
 
 // let columns: TableColumnsType<DataType> = [
 //   {
@@ -84,10 +76,12 @@ const Task = () => {
   const { userId } = useParams<{ userId: string }>();
   const { tasks, loading, error } = useTasks(Number(userId));
   const { users } = useUsers();
+  const dispatch = useDispatch();
 
+  const handleCheckboxChange = (taskId: number, checked: boolean) => {
+    dispatch(setEditStatus({ taskId, completed: checked }));
+  };
 
-  // const taskId = uniqueTaskId.map((id) => id);
-  // console.log('ID', taskId);
 
   let columns: TableColumnsType<DataType> = [
     {
@@ -125,15 +119,15 @@ const Task = () => {
         },
       ],
       onFilter: (value, record) => record.completed.indexOf(value as string) === 0,
-      // render: () => (
-      //   <Space size="middle">
-      //     <Dropdown menu={{ items }}>
-      //       <a>
-      //         More <DownOutlined />
-      //       </a>
-      //     </Dropdown>
-      //   </Space>
-      // )
+      render: (completed: string, record: DataType) => (
+        <Checkbox
+          onChange={(e) => handleCheckboxChange(record.id as number, e.target.checked)}
+          checked={completed === 'Completed'}
+        >
+          {/* checked={completed === 'Completed'}> */}
+          {completed}
+        </Checkbox >
+      ),
     },
   ];
 
@@ -143,13 +137,15 @@ const Task = () => {
     return user.name
   })
 
-  const data = tasks.map((task: TaskType) => ({
+  const data: DataType[] = tasks.map((task: TaskType) => ({
     key: task.id,
     id: task.id,
     userId: userData[task.userId - 1],
     title: task.title,
     completed: task.completed ? 'Completed' : 'Uncompleted',
   }));
+
+  console.log('data', data);
 
 
   //feed filter data dynamically
@@ -167,9 +163,6 @@ const Task = () => {
   columns[0].filters = Array.from(filterMap.values());
 
 
-  // console.log('userId', userData);
-  console.log('data', data);
-
   return (
     <Table
       id='table'
@@ -177,28 +170,13 @@ const Task = () => {
       dataSource={data}
       onChange={onChange}
       showSorterTooltip={{ target: 'sorter-icon' }}
+
       pagination={{ pageSize: 10 }}
     />
   );
 };
 
 export default Task;
-
-
-// if (data.length === userData.length) {
-//   data.forEach((item, index) => {
-//     item.userId = userData[index]
-//   })
-// }
-
-
-// const dynamicFilters = tasks.map((task: TaskType) => ({
-//   text: userData[task.userId - 1],
-//   value: task.userId,
-// }))
-
-// columns[0].filters = [...dynamicFilters];
-
 
 
 

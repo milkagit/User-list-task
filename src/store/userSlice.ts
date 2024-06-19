@@ -55,10 +55,7 @@ const usersSlice = createSlice({
     },
     clearEditUser(state) {
       state.editUser = null
-    },
-    setFullView(state, action: PayloadAction<boolean>) {
-      state.fullView = action.payload
-    },
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -83,6 +80,6 @@ const usersSlice = createSlice({
   },
 });
 
-export const { setEditUser, clearEditUser, setFullView } = usersSlice.actions;
+export const { setEditUser, clearEditUser } = usersSlice.actions;
 
 export default usersSlice.reducer;

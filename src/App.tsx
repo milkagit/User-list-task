@@ -5,7 +5,7 @@ import Task from './components/Task';
 import UserList from './components/UserList';
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -28,9 +28,17 @@ const App: React.FC = () => {
     setCurrent(e.key);
   };
 
+  const memoizedMenu = useMemo(() => (
+    <Menu onClick={handleClick} selectedKeys={[current]} mode='horizontal' items={items} />
+  ), [current])
+
+
+
+
   return (
     <Router>
-      <Menu onClick={handleClick} selectedKeys={[current]} mode='horizontal' items={items} />
+      {memoizedMenu}
+      {/* <Menu onClick={handleClick} selectedKeys={[current]} mode='horizontal' items={items} /> */}
       <Routes>
         <Route path="/" Component={UserList} />
         <Route path="/posts/:userId" Component={UserPost} />

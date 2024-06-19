@@ -1,11 +1,13 @@
+import { useEffect, useRef } from 'react';
 import usePosts from '../hooks/usePosts';
 import { useParams } from 'react-router-dom';
-import { setEditPost, setUpdatePost } from '../store/postSlice';
+import { deletePostThunk, setEditPost, setUpdatePost, updatePostThunk } from '../store/postSlice';
 import { AppDispatch, RootState } from '../store';
 import { useDispatch, useSelector } from 'react-redux';
 import UserList from './UserList';
 import { CheckOutlined, HighlightOutlined } from '@ant-design/icons';
-import { Button, Divider, Radio, Space, Typography } from 'antd';
+import { Button, Divider, Radio, Space, Typography, message, Popconfirm } from 'antd';
+import type { PopconfirmProps } from 'antd';
 import { Post } from '../api/posts';
 
 const { Paragraph } = Typography;
@@ -13,34 +15,53 @@ const { Paragraph } = Typography;
 const UserPost = () => {
     const { userId } = useParams<{ userId: string }>();
     const { posts, loading, error, updatePost } = usePosts(Number(userId));
+    const initialValuesRef = useRef<{ [key: number]: { title: string, body: string } }>({});
     const dispatch = useDispatch<AppDispatch>();
 
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
 
-
-
     const handleEdit = (post: Post, updatedText: string, field: 'title' | 'body') => {
         const updatedPost = {
             ...post,
             [field]: updatedText,
-        }
-        dispatch(setEditPost(updatedPost));
-        updatePost(updatedPost)
+        };
+        dispatch(setUpdatePost(updatedPost)); // update the local state immediately
     };
 
     const handleSave = (post: Post) => {
-        dispatch(setUpdatePost(post));
+        dispatch(updatePostThunk(post)); // dispatch thunk to update server response
+    };
+
+    const confirmDelete = (post: Post) => {
+        return (e: React.MouseEvent<HTMLElement, MouseEvent> | undefined) => {
+            dispatch(deletePostThunk(post))
+                .then(() => {
+                    message.success('Post deleted!');
+                })
+                .catch(() => {
+                    message.error('Failed to delete post');
+                });
+        };
     }
+
+    const cancel: PopconfirmProps['onCancel'] = (e) => {
+        console.log(e);
+        message.error('Action cancelled!');
+    };
+
 
     return (
         <div>
+            {loading && <div>Loading...</div>}
+            {error && <div>Error: {error}</div>}
             <UserList userId={Number(userId)} />
             <Divider />
             {posts.map(post => (
                 <div key={post.id}>
                     <Paragraph
+                        strong
                         editable={{
                             icon: <HighlightOutlined />,
                             onChange: (updatedText: string) => handleEdit(post, updatedText, 'title'),
@@ -57,7 +78,17 @@ const UserPost = () => {
                     >
                         body: {post.body}
                     </Paragraph>
-                    <button onClick={() => handleSave(post)}>Save</button>
+                    <Button onClick={() => handleSave(post)}>Save and send back to API</Button>
+                    <Popconfirm
+                        title="Delete the task"
+                        description="Are you sure to delete this task?"
+                        onConfirm={confirmDelete(post)}
+                        onCancel={cancel}
+                        okText="Yes"
+                        cancelText="No"
+                    >
+                        <Button danger>Delete</Button>
+                    </Popconfirm>
                 </div>
             ))}
         </div >

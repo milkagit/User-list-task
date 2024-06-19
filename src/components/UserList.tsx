@@ -36,14 +36,6 @@ const UserList: React.FC<UserListProps> = ({ userId }) => {
     dispatch(clearEditUser());
   };
 
-  if (loading) {
-    return <Spin tip="Loading..." />;
-  }
-
-  if (error) {
-    return <Alert message="Error" description={error} type="error" />;
-  }
-
 
   const filteredUsers = userId ? users.filter(user => user.id === userId) : users;
 
@@ -56,7 +48,7 @@ const UserList: React.FC<UserListProps> = ({ userId }) => {
   return (
     <div style={{
       padding: "40px",
-      boxSizing: "border-box" // <--- this line
+      boxSizing: "border-box"
     }} >
       {filteredUsers.length > 1 && filteredUsers.map((user: User) => (
         <Collapse
@@ -81,7 +73,8 @@ const UserList: React.FC<UserListProps> = ({ userId }) => {
           onCancel={handleCancelEdit}
         />
       )}
-
+      {loading && <Spin tip="Loading..." />}
+      {error && <Alert message="Error" description={error} type="error" />}
     </div>
   )
 };

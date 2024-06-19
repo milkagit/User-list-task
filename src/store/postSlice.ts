@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { fetchPosts, updatePostData } from '../api/posts';
+import { deletePost, fetchPosts, updatePostData } from '../api/posts';
 
 interface Post {
   id: number,
@@ -7,7 +7,7 @@ interface Post {
   body: string,
   userId: string
 }
-interface PospsState {
+interface PostsState {
   posts: Post[];
   // posts: Record<number, Post>
   loading: boolean;
@@ -15,14 +15,14 @@ interface PospsState {
   editedPost: Post | null;
 }
 
-const initialState: PospsState = {
+const initialState: PostsState = {
   posts: [],
   loading: false,
   error: null,
   editedPost: null,
 };
 
-// Thunk for fetching users
+// Thunk for fetching posts
 export const fetchPostThunk = createAsyncThunk(
   'posts/fetchPosts',
   async (userId: number) => {
@@ -38,10 +38,24 @@ export const fetchPostThunk = createAsyncThunk(
 );
 
 export const updatePostThunk = createAsyncThunk(
-  'users/updatePostData',
+  'posts/updatePostData',
+  // 'users/updatePostData',
   async (post: Post) => {
     try {
       const response = await updatePostData(post);
+      return response
+    } catch (error) {
+      console.error('Error updating post:', error);
+      throw error
+    }
+  }
+);
+
+export const deletePostThunk = createAsyncThunk(
+  'posts/deletePost',
+  async (post: Post) => {
+    try {
+      const response = await deletePost(post);
       return response
     } catch (error) {
       console.error('Error updating post:', error);
@@ -55,16 +69,12 @@ const postSlice = createSlice({
   initialState,
   reducers: {
     setEditPost(state, action: PayloadAction<Post>) {
-      // state.editedPost = action.payload
-      state.editedPost = { ...initialState, ...action.payload }
+      state.editedPost = action.payload
+      // state.editedPost = { ...initialState, ...action.payload }
     },
     clearEditPost(state) {
       state.editedPost = null
     },
-    // setUpdatePost(state, action: PayloadAction<Post>) {
-    //   state.posts[action.payload.id] = action.payload;
-    //   state.editedPost = null;
-    // },
     setUpdatePost(state, action: PayloadAction<Post>) {
       const index = state.posts.findIndex(post => post.id === action.payload.id);
       if (index !== -1) {
@@ -72,6 +82,13 @@ const postSlice = createSlice({
       }
       state.editedPost = null;
     },
+    // setUpdatePost(state, action: PayloadAction<Post>) {
+    //   const index = state.posts.findIndex(post => post.id === action.payload.id);
+    //   if (index !== -1) {
+    //     state.posts[index] = action.payload;
+    //   }
+    //   state.editedPost = null;
+    // },
   },
   extraReducers: (builder) => {
     builder
@@ -93,17 +110,31 @@ const postSlice = createSlice({
       })
       .addCase(updatePostThunk.fulfilled, (state, action) => {
         const updatedPost = action.payload;
+        console.log('updatedPost', updatedPost);
+
         const index = state.posts.findIndex(post => post.id === updatedPost.id);
         if (index !== -1) {
           state.posts[index] = updatedPost;
         }
-        state.editedPost = null;
+        // state.editedPost = null;
         state.loading = false;
       })
-      .addCase(updatePostThunk.rejected, (state, action) => {
+      .addCase(updatePostThunk.rejected, (state) => {
         state.loading = false;
         state.error = 'Failed to update post';
-      });
+      })
+      .addCase(deletePostThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null
+      })
+      .addCase(deletePostThunk.fulfilled, (state, action) => {
+        state.posts = state.posts.filter(post => post.id !== action.payload.id);
+        state.loading = false;
+      })
+      .addCase(deletePostThunk.rejected, (state) => {
+        state.loading = false;
+        state.error = 'Failed to delete post';
+      })
   },
 
 });

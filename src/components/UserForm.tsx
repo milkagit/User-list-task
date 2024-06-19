@@ -84,4 +84,4 @@ const UserForm: React.FC<UserFormProps> = ({ initialUserValues, onFinish }) => {
     )
 }
 
-export default UserForm;
+export default React.memo(UserForm);

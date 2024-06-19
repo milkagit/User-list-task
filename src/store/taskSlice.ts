@@ -3,12 +3,14 @@ import { Task, fetchTasks } from '../api/tasks';
 
 interface TasksState {
 	tasks: Task[];
+	status: Record<string, boolean>
 	loading: boolean;
 	error: string | null;
 }
 
 const initialState: TasksState = {
 	tasks: [],
+	status: {},
 	loading: false,
 	error: null,
 };
@@ -30,7 +32,18 @@ export const fetchTasksThunk = createAsyncThunk(
 const tasksSlice = createSlice({
 	name: 'tasks',
 	initialState,
-	reducers: {},
+	reducers: {
+		// setEditStatus: (state, action: PayloadAction<{ taskId: number, completed: boolean }>) => {
+		// 	state.status[action.payload.taskId] = action.payload.completed
+		// }
+		// setEditStatus: (state, action: PayloadAction<{ taskId: number; completed: boolean }>) => {
+		// 	const { taskId, completed } = action.payload;
+		// 	const taskToUpdate = state.tasks.find(task => task.id === taskId);
+		// 	if (taskToUpdate) {
+		// 		taskToUpdate.completed = completed;
+		// 	}
+		// },
+	},
 	extraReducers: (builder) => {
 		builder
 			.addCase(fetchTasksThunk.pending, (state) => {
@@ -47,5 +60,7 @@ const tasksSlice = createSlice({
 			});
 	},
 });
+
+export const { } = tasksSlice.actions;
 
 export default tasksSlice.reducer;

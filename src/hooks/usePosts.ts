@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../store';
-import { clearEditPost, fetchPostThunk, updatePostThunk } from '../store/postSlice';
+import { clearEditPost, deletePostThunk, fetchPostThunk, updatePostThunk } from '../store/postSlice';
 import { Post } from '../api/posts';
 
 const usePosts = (userId: number) => {
@@ -17,15 +17,17 @@ const usePosts = (userId: number) => {
     }
   }, []);
 
-  // console.log('posts in posts', posts) //array of all posts - correct
-
 
   const updatePost = (post: Post) => {
     dispatch(updatePostThunk(post));
   };
 
+  const deletePost = (post: Post) => {
+    dispatch(deletePostThunk(post));
+  };
 
-  return { posts, loading, error, updatePost };
+
+  return { posts, loading, error, updatePost, deletePost };
 };
 
 export default usePosts;
