@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import './App.css';
 import UserPost from './components/UserPost';
-import Task from './components/Task';
+import UserTask from './components/UserTask';
 import UserList from './components/UserList';
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
@@ -33,7 +33,7 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" Component={UserList} />
         <Route path="/posts/:userId" Component={UserPost} />
-        <Route path="/task" Component={Task} />
+        <Route path="/task" Component={UserTask} />
       </Routes>
     </Router>
   );

@@ -19,11 +19,6 @@ const customThemeTokens: ThemeConfig = {
     },
     Table: {
       headerBg: '#e6eded',
-    },
-    Form: {
-      padding: 50,
-      verticalLabelPadding: 40,
-      paddingLG: 40,
     }
   },
 };

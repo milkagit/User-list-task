@@ -19,7 +19,7 @@ const onChange: TableProps<DataType>['onChange'] = (pagination, filters, sorter,
   console.log('params', pagination, filters, sorter, extra);
 };
 
-const Task = () => {
+const UserTask = () => {
   const { tasks, loading, error } = useTasks();
   const { users } = useUsers();
   const dispatch = useDispatch();
@@ -116,7 +116,7 @@ const Task = () => {
   );
 };
 
-export default Task;
+export default UserTask;
 
 
 
