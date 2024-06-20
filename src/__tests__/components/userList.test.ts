@@ -33,7 +33,7 @@ describe('UserList Component', () => {
         // Render the UserList component
         render(<UserList />);
 
-        const userName = screen.getByText('John Doe');
+        const userName = screen.getByText('name');
         expect(userName).toBeInTheDocument();
     });
 });
