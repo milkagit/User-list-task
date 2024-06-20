@@ -71,11 +71,19 @@ const usersSlice = createSlice({
         state.loading = false;
         state.error = 'Failed to fetch users';
       })
+      .addCase(postUsersThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(postUsersThunk.fulfilled, (state, action) => {
         const index = state.users.findIndex((user) => user.id === action.payload.id);
         if (index !== -1) {
           state.users[index] = action.payload;
         }
+      })
+      .addCase(postUsersThunk.rejected, (state) => {
+        state.loading = false;
+        state.error = 'Failed to fetch users';
       })
   },
 });

@@ -39,7 +39,6 @@ export const fetchPostThunk = createAsyncThunk(
 
 export const updatePostThunk = createAsyncThunk(
   'posts/updatePostData',
-  // 'users/updatePostData',
   async (post: Post) => {
     try {
       const response = await updatePostData(post);
@@ -70,7 +69,6 @@ const postSlice = createSlice({
   reducers: {
     setEditPost(state, action: PayloadAction<Post>) {
       state.editedPost = action.payload
-      // state.editedPost = { ...initialState, ...action.payload }
     },
     clearEditPost(state) {
       state.editedPost = null
@@ -82,13 +80,6 @@ const postSlice = createSlice({
       }
       state.editedPost = null;
     },
-    // setUpdatePost(state, action: PayloadAction<Post>) {
-    //   const index = state.posts.findIndex(post => post.id === action.payload.id);
-    //   if (index !== -1) {
-    //     state.posts[index] = action.payload;
-    //   }
-    //   state.editedPost = null;
-    // },
   },
   extraReducers: (builder) => {
     builder
@@ -102,7 +93,7 @@ const postSlice = createSlice({
       })
       .addCase(fetchPostThunk.rejected, (state) => {
         state.loading = false;
-        state.error = 'Failed to fetch users';
+        state.error = 'Failed to fetch posts';
       })
       .addCase(updatePostThunk.pending, state => {
         state.loading = true;
@@ -110,7 +101,6 @@ const postSlice = createSlice({
       })
       .addCase(updatePostThunk.fulfilled, (state, action) => {
         const updatedPost = action.payload;
-        console.log('updatedPost', updatedPost);
 
         const index = state.posts.findIndex(post => post.id === updatedPost.id);
         if (index !== -1) {
