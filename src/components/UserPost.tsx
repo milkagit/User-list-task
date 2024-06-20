@@ -48,7 +48,7 @@ const UserPost = () => {
 
 
     return (
-        <div>
+        <Content>
             {loading && <div>Loading...</div>}
             {error && <div>Error: {error}</div>}
             <UserList userId={Number(userId)} />
@@ -92,7 +92,7 @@ const UserPost = () => {
             {loading && <Spin tip="Loading..." />}
             {error && <Alert message="Error" description={error} type="error" />}
 
-        </div >
+        </Content >
     );
 };
 

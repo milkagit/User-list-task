@@ -85,7 +85,7 @@ const UserForm: React.FC<UserFormProps> = ({ initialUserValues, onFinish }) => {
         {isTouched && showButton &&
           (
             <Flex gap='middle' justify='end'>
-              <Button type="primary" htmlType="submit">
+              <Button type="primary" htmlType="submit" onClick={() => setShowButton(false)}>
                 Submit
               </Button>
               <Button onClick={handleCancel}>

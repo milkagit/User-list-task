@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import { clearEditUser } from '../store/userSlice';
 import { useNavigate } from 'react-router-dom';
 import UserForm from './UserForm';
+import { Content } from 'antd/es/layout/layout';
 
 interface UserListProps {
   userId?: number
@@ -58,7 +59,7 @@ const UserList: React.FC<UserListProps> = ({ userId }) => {
   }));
 
   return (
-    <div style={{ padding: "2.5rem" }} >
+    <Content style={{ padding: "2.5rem" }} >
 
       {filteredUsers.length > 1 && (
         <Collapse defaultActiveKey={['1']} items={collapseItems} />
@@ -72,7 +73,7 @@ const UserList: React.FC<UserListProps> = ({ userId }) => {
       )}
       {loading && <Spin tip="Loading..." />}
       {error && <Alert message="Error" description={error} type="error" />}
-    </div>
+    </Content>
   )
 };
 
