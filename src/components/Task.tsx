@@ -7,14 +7,14 @@ import type { TableColumnsType, TableProps } from 'antd';
 import useUsers from '../hooks/useUsers';
 import { User } from '../api/users';
 import { DownOutlined } from '@ant-design/icons';
-import setEditStatus from '../store/taskSlice';
+import setEditStatus, { setTaskCompleted } from '../store/taskSlice';
 import { useDispatch } from 'react-redux';
 
 interface DataType {
   id: React.Key;
   userId: string;
   title: string;
-  completed: string;
+  completed: boolean;
 }
 
 const onChange: TableProps<DataType>['onChange'] = (pagination, filters, sorter, extra) => {
@@ -26,10 +26,9 @@ const Task = () => {
   const { users } = useUsers();
   const dispatch = useDispatch();
 
-  // const handleCheckboxChange = (taskId: number, checked: boolean) => {
-  //   dispatch(setEditStatus({ taskId, completed: checked }));
-  // };
-
+  const handleCheckboxChange = (taskId: number, checked: boolean) => {
+    dispatch(setTaskCompleted({ taskId, completed: checked }));
+  };
 
   let columns: TableColumnsType<DataType> = [
     {
@@ -66,26 +65,19 @@ const Task = () => {
           value: 'Uncompleted',
         },
       ],
-      onFilter: (value, record) => record.completed.indexOf(value as string) === 0,
-      render: (completed: string, record: DataType) => (
+      // onFilter: (value, record) => record.completed.indexOf(value as string) === 0,
+      onFilter: (value, record) => {
+        const filterValue = value === 'Completed'
+        return record.completed === filterValue
+      },
+      render: (completed, record) => (
         <Checkbox
-          // onChange={(e) => handleCheckboxChange(record.id as number, e.target.checked)}
-          checked={completed === 'Completed'}
+          checked={completed}
+          onChange={(e) => handleCheckboxChange(record.id as number, e.target.checked)}
         >
-          {/* checked={completed === 'Completed'}> */}
-          {completed}
+          {completed ? 'Completed' : 'Uncompleted'}
         </Checkbox >
-      ),
-      //     onFilter: (value, record) => record.completed.indexOf(value as string) === 0,
-      //     // render: () => (
-      //     //   <Space size="middle">
-      //     //     <Dropdown menu={{ items }}>
-      //     //       <a>
-      //     //         More <DownOutlined />
-      //     //       </a>
-      //     //     </Dropdown>
-      //     //   </Space>
-      //     // )
+      )
     },
   ];
 
@@ -100,11 +92,8 @@ const Task = () => {
     id: task.id,
     userId: userData[task.userId - 1],
     title: task.title,
-    completed: task.completed ? 'Completed' : 'Uncompleted',
+    completed: task.completed,
   }));
-
-  console.log('data', data);
-
 
   //feed filter data dynamically
   const filterMap = new Map();
@@ -128,17 +117,11 @@ const Task = () => {
       dataSource={data}
       onChange={onChange}
       showSorterTooltip={{ target: 'sorter-icon' }}
-
-      pagination={{ pageSize: 10 }}
     />
   );
 };
 
 export default Task;
-
-
-
-
 
 
 
