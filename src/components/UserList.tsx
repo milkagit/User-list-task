@@ -1,5 +1,4 @@
-// import React, { useRef, useState } from 'react';
-import { Collapse, Spin, Alert, Button, CollapseProps } from 'antd';
+import { Collapse, Spin, Alert, Button, CollapseProps, Flex } from 'antd';
 import useUsers from '../hooks/useUsers';
 import { User } from '../api/users';
 import { useDispatch } from 'react-redux';
@@ -51,16 +50,15 @@ const UserList: React.FC<UserListProps> = ({ userId }) => {
           onFinish={(values) => handleFinishEdit(values, user.id)}
           onCancel={handleCancelEdit}
         />
-        <Button onClick={() => handleRedirect(user.id)}>See posts</Button>
+        <Flex justify='end' style={{ padding: "0.625rem" }}>
+          <Button type="primary" onClick={() => handleRedirect(user.id)}>See posts</Button>
+        </Flex>
       </>
     ),
   }));
 
   return (
-    <div style={{
-      padding: "40px",
-      boxSizing: "border-box"
-    }} >
+    <div style={{ padding: "2.5rem" }} >
 
       {filteredUsers.length > 1 && (
         <Collapse defaultActiveKey={['1']} items={collapseItems} />

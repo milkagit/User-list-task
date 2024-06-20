@@ -24,14 +24,12 @@ const App: React.FC = () => {
   const [current, setCurrent] = useState('/');
 
   const handleClick: MenuProps['onClick'] = (e) => {
-    console.log('click ', e);
     setCurrent(e.key);
   };
 
-
   return (
     <Router>
-      <Menu onClick={handleClick} selectedKeys={[current]} mode='horizontal' items={items} />
+      <Menu onClick={handleClick} selectedKeys={[current]} mode='horizontal' items={items} style={{ paddingBottom: '1.5rem' }} />
       <Routes>
         <Route path="/" Component={UserList} />
         <Route path="/posts/:userId" Component={UserPost} />

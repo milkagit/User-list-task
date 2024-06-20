@@ -1,13 +1,11 @@
 import React from 'react';
 import useTasks from '../hooks/useTasks';
-import { useParams } from 'react-router-dom';
 import { Task as TaskType } from '../api/tasks';
-import { Dropdown, Space, Table, Checkbox } from 'antd';
+import { Table, Checkbox } from 'antd';
 import type { TableColumnsType, TableProps } from 'antd';
 import useUsers from '../hooks/useUsers';
 import { User } from '../api/users';
-import { DownOutlined } from '@ant-design/icons';
-import setEditStatus, { setTaskCompleted } from '../store/taskSlice';
+import { setTaskCompleted } from '../store/taskSlice';
 import { useDispatch } from 'react-redux';
 
 interface DataType {
@@ -41,7 +39,6 @@ const Task = () => {
           value: 'Joe',
         }
       ],
-      // specify the condition of filtering result here is that finding the name started with `value`
       onFilter: (value, record) => record.userId.indexOf(value as string) === 0,
       sorter: (a, b) => a.userId.length - b.userId.length,
       sortDirections: ['descend'],
@@ -65,7 +62,6 @@ const Task = () => {
           value: 'Uncompleted',
         },
       ],
-      // onFilter: (value, record) => record.completed.indexOf(value as string) === 0,
       onFilter: (value, record) => {
         const filterValue = value === 'Completed'
         return record.completed === filterValue
@@ -82,7 +78,6 @@ const Task = () => {
   ];
 
 
-  //connect user id with the user name and display it instead
   const userData = users.map((user: User) => {
     return user.name
   })
@@ -90,12 +85,11 @@ const Task = () => {
   const data: DataType[] = tasks.map((task: TaskType) => ({
     key: task.id,
     id: task.id,
-    userId: userData[task.userId - 1],
+    userId: userData[task.userId - 1], //map userId with user.name
     title: task.title,
     completed: task.completed,
   }));
 
-  //feed filter data dynamically
   const filterMap = new Map();
 
   tasks.forEach((task) => {
@@ -117,6 +111,7 @@ const Task = () => {
       dataSource={data}
       onChange={onChange}
       showSorterTooltip={{ target: 'sorter-icon' }}
+      style={{ padding: "2.5rem" }}
     />
   );
 };

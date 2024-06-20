@@ -18,7 +18,6 @@ export const fetchTasksThunk = createAsyncThunk(
 	async () => {
 		try {
 			const response = await fetchTasks();
-			// console.log('response tasks', response) //response ok
 			return response;
 		} catch (error) {
 			console.error('Error fetching tasks:', error);

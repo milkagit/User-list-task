@@ -1,14 +1,14 @@
-import { useEffect, useRef } from 'react';
 import usePosts from '../hooks/usePosts';
 import { useParams } from 'react-router-dom';
-import { deletePostThunk, setEditPost, setUpdatePost, updatePostThunk } from '../store/postSlice';
-import { AppDispatch, RootState } from '../store';
-import { useDispatch, useSelector } from 'react-redux';
+import { deletePostThunk, setUpdatePost, updatePostThunk } from '../store/postSlice';
+import { AppDispatch } from '../store';
+import { useDispatch } from 'react-redux';
 import UserList from './UserList';
-import { CheckOutlined, HighlightOutlined } from '@ant-design/icons';
-import { Button, Divider, Radio, Space, Typography, message, Popconfirm, Spin, Alert } from 'antd';
+import { HighlightOutlined } from '@ant-design/icons';
+import { Button, Divider, Space, Typography, message, Popconfirm, Spin, Alert } from 'antd';
 import type { PopconfirmProps } from 'antd';
 import { Post } from '../api/posts';
+import { Content } from 'antd/es/layout/layout';
 
 const { Paragraph } = Typography;
 
@@ -30,7 +30,7 @@ const UserPost = () => {
     };
 
     const confirmDelete = (post: Post) => {
-        return (e: React.MouseEvent<HTMLElement, MouseEvent> | undefined) => {
+        return () => {
             dispatch(deletePostThunk(post))
                 .then(() => {
                     message.success('Post deleted!');
@@ -54,7 +54,7 @@ const UserPost = () => {
             <UserList userId={Number(userId)} />
             <Divider />
             {posts.map(post => (
-                <div key={post.id}>
+                <Content key={post.id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', padding: '0.5rem 2rem 0.5rem 2rem' }}>
                     <Paragraph
                         strong
                         editable={{
@@ -64,7 +64,7 @@ const UserPost = () => {
                     >
                         title: {post.title}
                     </Paragraph>
-                    {/* <Divider /> */}
+
                     <Paragraph
                         editable={{
                             icon: <HighlightOutlined />,
@@ -73,18 +73,21 @@ const UserPost = () => {
                     >
                         body: {post.body}
                     </Paragraph>
-                    <Button onClick={() => handleSave(post)}>Save and send back to API</Button>
-                    <Popconfirm
-                        title="Delete the task"
-                        description="Are you sure to delete this task?"
-                        onConfirm={confirmDelete(post)}
-                        onCancel={cancel}
-                        okText="Yes"
-                        cancelText="No"
-                    >
-                        <Button danger>Delete</Button>
-                    </Popconfirm>
-                </div>
+                    <Space style={{ paddingTop: '1rem' }}>
+                        <Popconfirm
+                            title="Delete the task"
+                            description="Are you sure to delete this task?"
+                            onConfirm={confirmDelete(post)}
+                            onCancel={cancel}
+                            okText="Yes"
+                            cancelText="No"
+                        >
+                            <Button danger>Delete</Button>
+                        </Popconfirm>
+                        <Button type="primary" onClick={() => handleSave(post)}>Save and send back to API</Button>
+                    </Space>
+                    <Divider />
+                </Content>
             ))}
             {loading && <Spin tip="Loading..." />}
             {error && <Alert message="Error" description={error} type="error" />}

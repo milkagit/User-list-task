@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { User } from '../api/users';
 import { fetchUsers, postUpdateUserData } from '../api/users';
 
@@ -18,13 +18,10 @@ const initialState: UsersState = {
   fullView: false
 };
 
-// Thunk for fetching users
 export const fetchUsersThunk = createAsyncThunk(
   'users/fetchUsers',
   async () => {
     const response = await fetchUsers();
-    // console.log('response', response);
-    //take the mandatory fields + name
     return response.map((user: User) => (
       {
         id: user.id,

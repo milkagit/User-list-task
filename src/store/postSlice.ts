@@ -9,7 +9,6 @@ interface Post {
 }
 interface PostsState {
   posts: Post[];
-  // posts: Record<number, Post>
   loading: boolean;
   error: string | null;
   editedPost: Post | null;
@@ -22,13 +21,11 @@ const initialState: PostsState = {
   editedPost: null,
 };
 
-// Thunk for fetching posts
 export const fetchPostThunk = createAsyncThunk(
   'posts/fetchPosts',
   async (userId: number) => {
     try {
       const response = await fetchPosts(userId);
-      // console.log('response', response) //correct response
       return response;
     } catch (error) {
       console.error('Error fetching posts:', error);
@@ -106,7 +103,7 @@ const postSlice = createSlice({
         if (index !== -1) {
           state.posts[index] = updatedPost;
         }
-        // state.editedPost = null;
+        state.editedPost = null;
         state.loading = false;
       })
       .addCase(updatePostThunk.rejected, (state) => {
