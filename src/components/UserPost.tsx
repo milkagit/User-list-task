@@ -14,8 +14,7 @@ const { Paragraph } = Typography;
 
 const UserPost = () => {
     const { userId } = useParams<{ userId: string }>();
-    const { posts, loading, error, updatePost } = usePosts(Number(userId));
-    const initialValuesRef = useRef<{ [key: number]: { title: string, body: string } }>({});
+    const { posts, loading, error } = usePosts(Number(userId));
     const dispatch = useDispatch<AppDispatch>();
 
     const handleEdit = (post: Post, updatedText: string, field: 'title' | 'body') => {
