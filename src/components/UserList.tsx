@@ -59,8 +59,7 @@ const UserList: React.FC<UserListProps> = ({ userId }) => {
   }));
 
   return (
-    <Content style={{ padding: "2.5rem" }} >
-
+    <Content >
       {filteredUsers.length > 1 && (
         <Collapse defaultActiveKey={['1']} items={collapseItems} />
       )}

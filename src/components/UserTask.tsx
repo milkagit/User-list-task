@@ -111,7 +111,6 @@ const UserTask = () => {
       dataSource={data}
       onChange={onChange}
       showSorterTooltip={{ target: 'sorter-icon' }}
-      style={{ padding: "2.5rem" }}
     />
   );
 };
