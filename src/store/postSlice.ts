@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { deletePost, fetchPosts, updatePostData } from '../api/posts';
 
 interface Post {
@@ -63,21 +63,7 @@ export const deletePostThunk = createAsyncThunk(
 const postSlice = createSlice({
   name: 'posts',
   initialState,
-  reducers: {
-    setEditPost(state, action: PayloadAction<Post>) {
-      state.editedPost = action.payload
-    },
-    clearEditPost(state) {
-      state.editedPost = null
-    },
-    setUpdatePost(state, action: PayloadAction<Post>) {
-      const index = state.posts.findIndex(post => post.id === action.payload.id);
-      if (index !== -1) {
-        state.posts[index] = action.payload;
-      }
-      state.editedPost = null;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchPostThunk.pending, (state) => {
@@ -125,7 +111,5 @@ const postSlice = createSlice({
   },
 
 });
-
-export const { setEditPost, clearEditPost, setUpdatePost } = postSlice.actions;
 
 export default postSlice.reducer;

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../store';
-import { clearEditPost, deletePostThunk, fetchPostThunk, updatePostThunk } from '../store/postSlice';
+import { deletePostThunk, fetchPostThunk, updatePostThunk } from '../store/postSlice';
 import { Post } from '../api/posts';
 
 const usePosts = (userId: number) => {
@@ -9,7 +9,6 @@ const usePosts = (userId: number) => {
   const posts = useSelector((state: RootState) => state.posts.posts);
   const loading = useSelector((state: RootState) => state.posts.loading);
   const error = useSelector((state: RootState) => state.posts.error);
-  // const editPost = useSelector((state: RootState) => state.posts.editedPost)
 
   useEffect(() => {
     if (userId) {

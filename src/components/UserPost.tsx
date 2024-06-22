@@ -1,33 +1,34 @@
 import usePosts from '../hooks/usePosts';
 import { useParams } from 'react-router-dom';
-import { deletePostThunk, setUpdatePost, updatePostThunk } from '../store/postSlice';
+import { deletePostThunk, updatePostThunk } from '../store/postSlice';
 import { AppDispatch } from '../store';
 import { useDispatch } from 'react-redux';
 import UserList from './UserList';
 import { HighlightOutlined } from '@ant-design/icons';
-import { Button, Divider, Space, Typography, message, Popconfirm, Spin, Alert } from 'antd';
+import { Button, Divider, Space, Typography, message, Popconfirm } from 'antd';
 import type { PopconfirmProps } from 'antd';
 import { Post } from '../api/posts';
 import { Content } from 'antd/es/layout/layout';
+import { useState } from 'react';
 
 const { Paragraph } = Typography;
 
 const UserPost = () => {
     const { userId } = useParams<{ userId: string }>();
-    const { posts, loading, error } = usePosts(Number(userId));
+    const { posts } = usePosts(Number(userId));
     const dispatch = useDispatch<AppDispatch>();
 
-    const handleEdit = (post: Post, updatedText: string, field: 'title' | 'body') => {
-        const updatedPost = {
-            ...post,
-            [field]: updatedText,
-        };
-        dispatch(setUpdatePost(updatedPost)); // update the local state immediately
+    const [edit, setEdit] = useState<Post>({
+        id: 0,
+        userId: '',
+        body: '',
+        title: ''
+    });
+
+    const handleSave = (edit: Post) => {
+        dispatch(updatePostThunk(edit))
     };
 
-    const handleSave = (post: Post) => {
-        dispatch(updatePostThunk(post)); // dispatch thunk to update server response
-    };
 
     const confirmDelete = (post: Post) => {
         return () => {
@@ -49,8 +50,6 @@ const UserPost = () => {
 
     return (
         <Content>
-            {loading && <div>Loading...</div>}
-            {error && <div>Error: {error}</div>}
             <UserList userId={Number(userId)} />
             <Divider />
             {posts.map(post => (
@@ -59,19 +58,19 @@ const UserPost = () => {
                         strong
                         editable={{
                             icon: <HighlightOutlined />,
-                            onChange: (updatedText: string) => handleEdit(post, updatedText, 'title'),
+                            onChange: (val: string) => setEdit(edit => ({ ...post, title: val, body: edit?.id === post.id ? edit.body : post.body })),
                         }}
                     >
-                        title: {post.title}
+                        title: {edit?.id === post.id ? edit.title : post.title}
                     </Paragraph>
 
                     <Paragraph
                         editable={{
                             icon: <HighlightOutlined />,
-                            onChange: (updatedText: string) => handleEdit(post, updatedText, 'body'),
+                            onChange: (val: string) => setEdit(edit => ({ ...post, body: val, title: edit?.id === post.id ? edit.title : post.title })),
                         }}
                     >
-                        body: {post.body}
+                        body: {edit?.id === post.id ? edit.body : post.body}
                     </Paragraph>
                     <Space style={{ paddingTop: '1rem' }}>
                         <Popconfirm
@@ -84,14 +83,11 @@ const UserPost = () => {
                         >
                             <Button danger>Delete</Button>
                         </Popconfirm>
-                        <Button type="primary" onClick={() => handleSave(post)}>Save and send back to API</Button>
+                        <Button type="primary" onClick={() => handleSave(edit)}>Save and send back to API</Button>
                     </Space>
                     <Divider />
                 </Content>
             ))}
-            {loading && <Spin tip="Loading..." />}
-            {error && <Alert message="Error" description={error} type="error" />}
-
         </Content >
     );
 };

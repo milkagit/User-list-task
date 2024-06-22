@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Flex, Form, Input } from 'antd';
 import { User } from '../api/users';
+import useUsers from '../hooks/useUsers';
+import { useDispatch } from 'react-redux';
+import { clearEditUser, setEditUser } from '../store/userSlice';
 
 interface UserFormProps {
   initialUserValues: User
-  onFinish: (values: Partial<User>) => void
-  onCancel: () => void
+  filterUser: number
 }
 
 const validateMessages = {
@@ -16,19 +18,36 @@ const validateMessages = {
   noEmptySpace: 'No empty spaces allowed!',
 };
 
-const onFinish = (values: Partial<User>) => {
-  onFinish(values)
-}
 
-const UserForm: React.FC<UserFormProps> = ({ initialUserValues, onFinish }) => {
+
+const UserForm: React.FC<UserFormProps> = ({ initialUserValues, filterUser }) => {
   const [form] = Form.useForm();
   const { id, ...initialValues } = initialUserValues
   const [isTouched, setIsTouched] = useState(false);
   const [showButton, setShowButton] = useState(true);
+  const { updateUser } = useUsers();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     form.setFieldsValue(initialUserValues);
   }, [initialUserValues, form]);
+
+
+  const handleFinishEdit = (values: Partial<User>, userId: number) => {
+    const updatedUser = {
+      id: userId,
+      name: values.name || '',
+      username: values.username || '',
+      email: values.email || '',
+      city: values.city || '',
+      street: values.street || '',
+      suite: values.suite || ''
+    };
+    dispatch(setEditUser(updatedUser))
+    updateUser(updatedUser)
+    // dispatch(clearEditUser());
+  };
+
 
   const handleTouchField = () => {
     setIsTouched(form.isFieldsTouched())
@@ -50,7 +69,7 @@ const UserForm: React.FC<UserFormProps> = ({ initialUserValues, onFinish }) => {
         wrapperCol={{ span: 16 }}
         style={{ maxWidth: 600, paddingTop: '1.5rem' }}
         initialValues={initialUserValues}
-        onFinish={onFinish}
+        onFinish={(values) => handleFinishEdit(values, filterUser)}
         autoComplete="off"
         validateMessages={validateMessages}
         variant="filled"
@@ -82,17 +101,16 @@ const UserForm: React.FC<UserFormProps> = ({ initialUserValues, onFinish }) => {
           </Form.Item>
         )
         )}
-        {isTouched && showButton &&
-          (
-            <Flex gap='middle' justify='end'>
-              <Button type="primary" htmlType="submit" onClick={() => setShowButton(false)}>
-                Submit
-              </Button>
-              <Button onClick={handleCancel}>
-                Cancel
-              </Button>
-            </Flex>
-          )}
+        {isTouched && showButton && (
+          <Flex gap='middle' justify='end'>
+            <Button type="primary" htmlType="submit">
+              Submit
+            </Button>
+            <Button onClick={handleCancel}>
+              Cancel
+            </Button>
+          </Flex>
+        )}
 
       </Form>
     </Flex>
