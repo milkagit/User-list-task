@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../store';
-import { deletePostThunk, fetchPostThunk, updatePostThunk } from '../store/postSlice';
-import { Post } from '../api/posts';
+import { fetchPostThunk } from '../store/postSlice';
 
 const usePosts = (userId: number) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -16,17 +15,7 @@ const usePosts = (userId: number) => {
     }
   }, [userId]);
 
-
-  const updatePost = (post: Post) => {
-    dispatch(updatePostThunk(post));
-  };
-
-  const deletePost = (post: Post) => {
-    dispatch(deletePostThunk(post));
-  };
-
-
-  return { posts, loading, error, updatePost, deletePost };
+  return { posts, loading, error };
 };
 
 export default usePosts;

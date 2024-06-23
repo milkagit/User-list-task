@@ -1,9 +1,7 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Button, Flex, Form, Input } from 'antd';
 import { User } from '../api/users';
 import useUsers from '../hooks/useUsers';
-import { useDispatch } from 'react-redux';
-import { clearEditUser, setEditUser } from '../store/userSlice';
 
 interface UserFormProps {
   initialUserValues: User
@@ -26,11 +24,14 @@ const UserForm: React.FC<UserFormProps> = ({ initialUserValues, filterUser }) =>
   const [isTouched, setIsTouched] = useState(false);
   const [showButton, setShowButton] = useState(true);
   const { updateUser } = useUsers();
-  const dispatch = useDispatch();
+  const formRef = useRef<any>(null);
+  const stateRef = useRef(initialValues);
 
   useEffect(() => {
-    form.setFieldsValue(initialUserValues);
-  }, [initialUserValues, form]);
+    if (formRef.current) {
+      formRef.current.setFieldsValue(stateRef.current);
+    }
+  }, [initialUserValues]);
 
 
   const handleFinishEdit = (values: Partial<User>, userId: number) => {
@@ -43,27 +44,28 @@ const UserForm: React.FC<UserFormProps> = ({ initialUserValues, filterUser }) =>
       street: values.street || '',
       suite: values.suite || ''
     };
-    dispatch(setEditUser(updatedUser))
     updateUser(updatedUser)
-    // dispatch(clearEditUser());
   };
 
 
   const handleTouchField = () => {
     setIsTouched(form.isFieldsTouched())
     setShowButton(true)
+    stateRef.current = form.getFieldsValue()
   }
 
   const handleCancel = () => {
     form.resetFields()
     setShowButton(false)
   }
+  // console.log('intialUserValues', initialUserValues) correct updated values
 
 
   return (
     <Flex align='center' justify='center'>
       <Form
         form={form}
+        ref={formRef}
         name={`user-form-${id}`}
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 16 }}
@@ -118,3 +120,7 @@ const UserForm: React.FC<UserFormProps> = ({ initialUserValues, filterUser }) =>
 }
 
 export default UserForm
+
+function clearEditUser(): any {
+  throw new Error('Function not implemented.');
+}

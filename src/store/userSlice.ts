@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { User } from '../api/users';
 import { fetchUsers, postUpdateUserData } from '../api/users';
 
@@ -6,16 +6,16 @@ interface UsersState {
   users: User[];
   loading: boolean;
   error: string | null;
-  editUser: number | null;
-  fullView: boolean
+  // editUser: User[] | null;
+  editUser: Record<number, Partial<User>>;
 }
 
 const initialState: UsersState = {
   users: [],
   loading: false,
   error: null,
-  editUser: null,
-  fullView: false
+  editUser: {},
+  // editUser: null,
 };
 
 export const fetchUsersThunk = createAsyncThunk(
@@ -39,6 +39,7 @@ export const postUsersThunk = createAsyncThunk(
   'users/postUpdateUserData',
   async (user: User) => {
     const response = await postUpdateUserData(user);
+    console.log('response', response)
     return response
   }
 );
@@ -47,11 +48,17 @@ const usersSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {
-    setEditUser(state, action) {
-      state.editUser = action.payload
+    setUser(state, action: PayloadAction<User[]>) {
+      state.users = action.payload;
     },
-    clearEditUser(state) {
-      state.editUser = null
+    setEditUser(state, action: PayloadAction<Partial<User>>) {
+      const { id } = action.payload;
+      if (id !== undefined) {
+        state.editUser[id] = action.payload;
+      }
+    },
+    clearEditUser(state, action: PayloadAction<number>) {
+      delete state.editUser[action.payload];
     }
   },
   extraReducers: (builder) => {
@@ -85,6 +92,8 @@ const usersSlice = createSlice({
   },
 });
 
-export const { setEditUser, clearEditUser } = usersSlice.actions;
+export const { setUser, setEditUser } = usersSlice.actions;
+
+export const selectUsers = (state: { users: UsersState }) => state.users;
 
 export default usersSlice.reducer;

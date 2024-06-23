@@ -1,7 +1,7 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../store';
-import { fetchUsersThunk, postUsersThunk } from '../store/userSlice';
+import { fetchUsersThunk, postUsersThunk, selectUsers } from '../store/userSlice';
 import { User } from "../api/users";
 
 const useUsers = () => {
@@ -12,13 +12,14 @@ const useUsers = () => {
 
   useEffect(() => {
     dispatch(fetchUsersThunk());
-  }, []);
+  }, [dispatch]);
 
   const updateUser = (user: User) => {
     dispatch(postUsersThunk(user));
-  };
+  }
 
   return { users, loading, error, updateUser };
 };
 
 export default useUsers;
+

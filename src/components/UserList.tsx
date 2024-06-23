@@ -27,6 +27,7 @@ const UserList: React.FC<UserListProps> = ({ userId }) => {
     children: (
       <>
         <UserForm
+          key={user.id}
           initialUserValues={user}
           filterUser={user.id}
         />
@@ -44,6 +45,7 @@ const UserList: React.FC<UserListProps> = ({ userId }) => {
       )}
       {filteredUsers.length === 1 && (
         <UserForm
+          key={filteredUsers[0].id}
           initialUserValues={filteredUsers[0]}
           filterUser={filteredUsers[0].id}
         />
