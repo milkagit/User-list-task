@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { User } from '../api/users';
 import { fetchUsers, postUpdateUserData } from '../api/users';
 
@@ -6,16 +6,12 @@ interface UsersState {
   users: User[];
   loading: boolean;
   error: string | null;
-  // editUser: User[] | null;
-  editUser: Record<number, Partial<User>>;
 }
 
 const initialState: UsersState = {
   users: [],
   loading: false,
   error: null,
-  editUser: {},
-  // editUser: null,
 };
 
 export const fetchUsersThunk = createAsyncThunk(
@@ -47,20 +43,7 @@ export const postUsersThunk = createAsyncThunk(
 const usersSlice = createSlice({
   name: 'users',
   initialState,
-  reducers: {
-    setUser(state, action: PayloadAction<User[]>) {
-      state.users = action.payload;
-    },
-    setEditUser(state, action: PayloadAction<Partial<User>>) {
-      const { id } = action.payload;
-      if (id !== undefined) {
-        state.editUser[id] = action.payload;
-      }
-    },
-    clearEditUser(state, action: PayloadAction<number>) {
-      delete state.editUser[action.payload];
-    }
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchUsersThunk.pending, (state) => {
@@ -80,6 +63,7 @@ const usersSlice = createSlice({
         state.error = null;
       })
       .addCase(postUsersThunk.fulfilled, (state, action) => {
+        state.loading = false;
         const index = state.users.findIndex((user) => user.id === action.payload.id);
         if (index !== -1) {
           state.users[index] = action.payload;
@@ -91,8 +75,6 @@ const usersSlice = createSlice({
       })
   },
 });
-
-export const { setUser, setEditUser } = usersSlice.actions;
 
 export const selectUsers = (state: { users: UsersState }) => state.users;
 

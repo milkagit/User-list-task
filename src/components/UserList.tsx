@@ -13,8 +13,6 @@ const UserList: React.FC<UserListProps> = ({ userId }) => {
   const { users, loading, error } = useUsers();
   const path = useNavigate();
 
-
-
   const handleRedirect = (userId: number) => {
     path(`/posts/${userId}`)
   }

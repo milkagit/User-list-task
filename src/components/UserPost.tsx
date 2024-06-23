@@ -5,7 +5,7 @@ import { AppDispatch } from '../store';
 import { useDispatch } from 'react-redux';
 import UserList from './UserList';
 import { HighlightOutlined } from '@ant-design/icons';
-import { Button, Divider, Space, Typography, message, Popconfirm } from 'antd';
+import { Button, Divider, Space, Typography, message, Popconfirm, Spin, Alert } from 'antd';
 import type { PopconfirmProps } from 'antd';
 import { Post } from '../api/posts';
 import { Content } from 'antd/es/layout/layout';
@@ -15,7 +15,7 @@ const { Paragraph } = Typography;
 
 const UserPost = () => {
     const { userId } = useParams<{ userId: string }>();
-    const { posts } = usePosts(Number(userId));
+    const { posts, loading, error } = usePosts(Number(userId));
     const dispatch = useDispatch<AppDispatch>();
 
     const [edit, setEdit] = useState<Post>({
@@ -50,6 +50,8 @@ const UserPost = () => {
 
     return (
         <Content>
+            {loading && <Spin tip="Loading..." />}
+            {error && <Alert message="Error" description={error} type="error" />}
             <UserList userId={Number(userId)} />
             <Divider />
             {posts.map(post => (

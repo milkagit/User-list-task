@@ -4,7 +4,7 @@ import { User } from '../api/users';
 import useUsers from '../hooks/useUsers';
 
 interface UserFormProps {
-  initialUserValues: User
+  initialUserValues: User;
   filterUser: number
 }
 
@@ -23,7 +23,7 @@ const UserForm: React.FC<UserFormProps> = ({ initialUserValues, filterUser }) =>
   const { id, ...initialValues } = initialUserValues
   const [isTouched, setIsTouched] = useState(false);
   const [showButton, setShowButton] = useState(true);
-  const { updateUser } = useUsers();
+  const { updateUser, } = useUsers();
   const formRef = useRef<any>(null);
   const stateRef = useRef(initialValues);
 
@@ -58,8 +58,6 @@ const UserForm: React.FC<UserFormProps> = ({ initialUserValues, filterUser }) =>
     form.resetFields()
     setShowButton(false)
   }
-  // console.log('intialUserValues', initialUserValues) correct updated values
-
 
   return (
     <Flex align='center' justify='center'>
@@ -120,7 +118,3 @@ const UserForm: React.FC<UserFormProps> = ({ initialUserValues, filterUser }) =>
 }
 
 export default UserForm
-
-function clearEditUser(): any {
-  throw new Error('Function not implemented.');
-}

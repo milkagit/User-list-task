@@ -1,7 +1,7 @@
 import React from 'react';
 import useTasks from '../hooks/useTasks';
 import { Task as TaskType } from '../api/tasks';
-import { Table, Checkbox } from 'antd';
+import { Table, Checkbox, Alert } from 'antd';
 import type { TableColumnsType, TableProps } from 'antd';
 import useUsers from '../hooks/useUsers';
 import { User } from '../api/users';
@@ -20,7 +20,7 @@ const onChange: TableProps<DataType>['onChange'] = (pagination, filters, sorter,
 };
 
 const UserTask = () => {
-  const { tasks, loading, error } = useTasks();
+  const { tasks, error } = useTasks();
   const { users } = useUsers();
   const dispatch = useDispatch();
 
@@ -105,13 +105,16 @@ const UserTask = () => {
 
 
   return (
-    <Table
-      id='table'
-      columns={columns}
-      dataSource={data}
-      onChange={onChange}
-      showSorterTooltip={{ target: 'sorter-icon' }}
-    />
+    <>
+      <Table
+        id='table'
+        columns={columns}
+        dataSource={data}
+        onChange={onChange}
+        showSorterTooltip={{ target: 'sorter-icon' }}
+      />
+      {error && <Alert message="Error" description={error} type="error" />}
+    </>
   );
 };
 
